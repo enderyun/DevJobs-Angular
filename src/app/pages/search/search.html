@@ -1,7 +1,6 @@
 <main>
-  <app-search-form-section [hasActiveFilters]="hasActiveFilters" (onSearch)="handleSearch()"
-    (onTextFilter)="handleTextFilter()" (onClearFilters)="handleClearFilters()" [initialText]="textToFilter"
-    [initialFilters]="filters" />
+
+  <app-search-form-section />
 
   <section>
     <div className="spinner-container">
@@ -15,7 +14,9 @@
       </svg>
     </div>
     :
-    <app-job-listings [jobs]="jobs" />
-    <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" (onPageChange)="handlePageChange()" />
+    <app-job-listings />
+
+    <app-pagination />
+
   </section>
 </main>
