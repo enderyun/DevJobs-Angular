@@ -11,7 +11,7 @@ import { SearchFormSection } from '../../components/search-form-section/search-f
 import { JobListings } from '../../components/job-listings/job-listings';
 import { Pagination } from '../../components/pagination/pagination';
 import { type Job } from '../../models/job.model';
-import { httpResource } from '@angular/common/http';
+import { HttpParams, httpResource } from '@angular/common/http';
 
 const RESULTS_PER_PAGE = 4;
 
@@ -45,21 +45,30 @@ export class Search {
   // La función () => ({ url, params }) es reactiva. Angular detecta
   // automáticamente cuales signals se leen dentro y re-lanza el fetch
   // cuando alguno cambia.
-  readonly jobsResource = httpResource<{ data: Job[]; total: number; limit: number; offset: number }>(() => ({
-    url: 'http://localhost:3000/api/jobs',
-    params: {
-      technology: this.filters().technology,
-      location: this.filters().location,
-      experienceLevel: this.filters().experienceLevel,
-      text: this.textToFilter(),
-      offset: (this.currentPage() - 1) * RESULTS_PER_PAGE,
-      limit: RESULTS_PER_PAGE,
-    },
-    method: 'GET',
-  }));
+  readonly jobsResource = httpResource<{ data: Job[]; total: number; limit: number; offset: number }>(() => {
+    const filters = this.filters()
+    const text = this.textToFilter()
+
+    let params = new HttpParams()
+      .set('offset', (this.currentPage() - 1) * RESULTS_PER_PAGE)
+      .set('limit', RESULTS_PER_PAGE)
+
+      if (filters.technology) params = params.set('technology', filters.technology)
+      if (filters.location) params = params.set('type', filters.location)
+      if (filters.experienceLevel) params = params.set('level', filters.experienceLevel)
+      if (text) params = params.set('text', text)
+
+      return {
+        url: 'http://localhost:3000/jobs',
+        params,
+      }
+  });
 
 
   // ─── ACTUALIZAR LA URL ────────────────────────────────────────────────────
+  // El motivo de no usar httpParams es porque el effect usa Router.navigate, no 
+  // httpClient. Router.navigate espera un {} y no parametros.
+  
   constructor() {
     effect(() => {
       const filters = this.filters()
