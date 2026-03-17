@@ -1,10 +1,14 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { Job } from '../../models/job.model';
+import { JobCard } from '../job-card/job-card';
 
 @Component({
   selector: 'app-job-listings',
-  imports: [],
+  imports: [JobCard],
   templateUrl: './job-listings.html',
   styleUrl: './job-listings.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class JobListings {}
+export class JobListings {
+  @Input() jobs!: Job[];
+}

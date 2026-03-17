@@ -3,6 +3,7 @@
   <app-search-form-section />
 
   <section>
+    @if (jobsResource.isLoading()) {
     <div className="spinner-container">
       <svg className="spinner" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -13,8 +14,10 @@
         <path d="M13 15a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
       </svg>
     </div>
-    :
-    <app-job-listings />
+    }
+    @else {
+    <app-job-listings [jobs]="jobs()" />
+    }
 
     <app-pagination />
 

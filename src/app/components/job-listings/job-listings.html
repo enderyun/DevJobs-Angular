@@ -1,1 +1,13 @@
-<p>job-listings works!</p>
+@if (jobs.length !== 0) {
+  <h2>Resultados de búsqueda</h2>
+} 
+
+<div class="jobs-listings">
+  @if (jobs.length === 0) {
+    <p>No se han encontrado resultados que coincidan con su búsqueda.</p>
+  } @else {
+    @for (job of jobs; track job.id) {
+      <app-job-card [job]="job" />
+    }
+  }
+</div>

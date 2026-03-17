@@ -9,4 +9,6 @@ import { RouterLink } from '@angular/router';
   styleUrl: './job-card.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class JobCard {}
+export class JobCard {
+  @Input() job!: Job;
+}

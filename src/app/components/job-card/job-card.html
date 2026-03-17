@@ -1,23 +1,22 @@
-<!-- <article
+<article
   className="job-listing-card"
   data-modalidad={job.data?.modalidad}
   data-nivel={job.data?.nivel}
   data-technology={job.data?.technology}
 >
   <div>
-    <a routerLink="/jobs/{{ job.id }}" class="title">
+    <a routerLink="/search" class="title">
       <h3>{{ job.titulo }}</h3>
     </a>
     <small>
       {{ job.empresa }} | {{ job.ubicacion }}
     </small>
-    <p>{job.descripcion}</p>
+    <p>{{ job.descripcion }}</p>
   </div>
   <div className={styles.actions}>
-    <Link href={`/jobs/${job.id}`} className={styles.details}>
+    <a routerLink="/search" className={styles.details}>
       Ver Detalles
-    </Link>
-    <JobCardApplyButton />      
-    <JobCardFavoriteButton jobId={job.id} />
+    </a>  
+    <button></button>
   </div>
-</article> -->
+</article>

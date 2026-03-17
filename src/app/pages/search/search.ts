@@ -67,13 +67,13 @@ export class Search {
       const currentPage = this.currentPage()
 
       const queryParams: Record<string, string | number> = {}
-      
+
       if (filters.technology) queryParams['technology'] = filters.technology
       if (filters.location) queryParams['type'] = filters.location
-      if (filters.experienceLevel) queryParams['level'] = filters.technology
+      if (filters.experienceLevel) queryParams['level'] = filters.experienceLevel
       if (textToFilter) queryParams['text'] = textToFilter
       if (currentPage > 1) queryParams['page'] = currentPage
-      
+
       this.router.navigate([], {
         relativeTo: this.route,
         queryParams,
@@ -84,8 +84,20 @@ export class Search {
   }
 
 
-  readonly jobs = computed(() => this.jobsResource.value()?.data ?? []);
-  readonly total = computed(() => this.jobsResource.value()?.total ?? 0);
+  readonly jobs = computed(() =>{
+    if (this.jobsResource.hasValue()) {
+      return this.jobsResource.value()?.data ?? [];
+    }
+    return [];
+  });
+
+  readonly total = computed(() => {
+    if (this.jobsResource.hasValue()) {
+      return this.jobsResource.value()?.total ?? 0;
+    }
+    return 0;
+  });
+
   readonly totalPages = computed(() => Math.ceil(this.total() / RESULTS_PER_PAGE));
 
 }
