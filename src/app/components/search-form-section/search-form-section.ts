@@ -43,6 +43,7 @@ export class SearchFormSection {
       return;
     }
 
+    // Puede causar problemas si se tiene el preventDefault antes de los input del form.
     event.preventDefault();
 
     const form = event.currentTarget as HTMLFormElement;

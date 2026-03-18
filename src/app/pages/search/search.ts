@@ -28,8 +28,8 @@ export class Search {
 
   readonly filters = signal<SearchFilters>({
     technology: this.route.snapshot.queryParamMap.get('technology') ?? '',
-    location: this.route.snapshot.queryParamMap.get('location') ?? '',
-    experienceLevel: this.route.snapshot.queryParamMap.get('experienceLevel') ?? '',
+    location: this.route.snapshot.queryParamMap.get('type') ?? '',
+    experienceLevel: this.route.snapshot.queryParamMap.get('level') ?? '',
   });
 
   readonly textToFilter = signal(this.route.snapshot.queryParamMap.get('text') ?? '');
@@ -69,27 +69,36 @@ export class Search {
   // El motivo de no usar httpParams es porque el effect usa Router.navigate, no 
   // httpClient. Router.navigate espera un {} y no parametros.
   
+  readonly paginationBaseQueryParams = computed(() => {
+    const filters = this.filters();
+    const textToFilter = this.textToFilter();
+    const queryParams: Record<string, string | number> = {};
+
+    if (filters.technology) queryParams['technology'] = filters.technology;
+    if (filters.location) queryParams['type'] = filters.location;
+    if (filters.experienceLevel) queryParams['level'] = filters.experienceLevel;
+    if (textToFilter) queryParams['text'] = textToFilter;
+
+    return queryParams;
+  });
+
+  readonly searchQueryParams = computed(() => {
+    const currentPage = this.currentPage();
+    const queryParams = { ...this.paginationBaseQueryParams() };
+
+    if (currentPage > 1) queryParams['page'] = currentPage;
+
+    return queryParams;
+  });
+
   constructor() {
     effect(() => {
-      const filters = this.filters()
-      const textToFilter = this.textToFilter()
-      const currentPage = this.currentPage()
-
-      const queryParams: Record<string, string | number> = {}
-
-      if (filters.technology) queryParams['technology'] = filters.technology
-      if (filters.location) queryParams['type'] = filters.location
-      if (filters.experienceLevel) queryParams['level'] = filters.experienceLevel
-      if (textToFilter) queryParams['text'] = textToFilter
-      if (currentPage > 1) queryParams['page'] = currentPage
-
       this.router.navigate([], {
         relativeTo: this.route,
-        queryParams,
+        queryParams: this.searchQueryParams(),
         replaceUrl: true,
-      })
-
-    })
+      });
+    });
   }
 
   readonly jobs = computed(() =>{
@@ -116,6 +125,10 @@ export class Search {
   handleTextFilter(text: string) {
     this.textToFilter.set(text);
     this.currentPage.set(1);
+  }
+
+  handlePageChange(page: number) {
+    this.currentPage.set(page);
   }
 
 }

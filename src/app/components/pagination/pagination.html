@@ -1,1 +1,59 @@
-<p>pagination works!</p>
+@if (totalPages() > 1) {
+	<nav class="pagination" aria-label="Paginación de resultados">
+		<a
+			[routerLink]="[]"
+			[queryParams]="buildQueryParams(currentPage() - 1)"
+			[class.is-disabled]="isFirstPage()"
+			aria-label="Página anterior"
+			(click)="handlePrevClick($event)"
+		>
+			<svg
+				width="16"
+				height="16"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+				<path d="M15 6l-6 6l6 6" />
+			</svg>
+		</a>
+
+		@for (page of pages(); track page) {
+			<a
+				[routerLink]="[]"
+				[queryParams]="buildQueryParams(page)"
+				[attr.aria-current]="currentPage() === page ? 'page' : null"
+				[class.is-active]="currentPage() === page"
+				(click)="handleChangePage($event, page)"
+			>
+				{{ page }}
+			</a>
+		}
+
+		<a
+			[routerLink]="[]"
+			[queryParams]="buildQueryParams(currentPage() + 1)"
+			[class.is-disabled]="isLastPage()"
+			aria-label="Página siguiente"
+			(click)="handleNextClick($event)"
+		>
+			<svg
+				width="16"
+				height="16"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="1.5"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+				<path d="M9 6l6 6l-6 6" />
+			</svg>
+		</a>
+	</nav>
+}

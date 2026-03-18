@@ -24,7 +24,12 @@
     <app-job-listings [jobs]="jobs()" />
     }
 
-    <app-pagination />
+    <app-pagination
+      [currentPage]="currentPage()"
+      [totalPages]="totalPages()"
+      [baseQueryParams]="paginationBaseQueryParams()"
+      (onPageChange)="handlePageChange($event)"
+    />
 
   </section>
 </main>
