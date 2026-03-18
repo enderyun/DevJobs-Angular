@@ -16,3 +16,9 @@ export interface Job {
     about: string;
   };
 }
+
+export interface SearchFilters {
+  technology?: string
+  location?: string 
+  experienceLevel?: string 
+}

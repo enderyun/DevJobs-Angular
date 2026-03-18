@@ -1,6 +1,11 @@
 <main>
 
-  <app-search-form-section />
+  <app-search-form-section 
+    [initialText]="textToFilter()"
+    [initialFilters]="filters()"
+    (onSearch)="handleSearch($event)"
+    (onTextFilter)="handleTextFilter($event)"
+  />
 
   <section>
     @if (jobsResource.isLoading()) {

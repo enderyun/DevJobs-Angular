@@ -10,7 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SearchFormSection } from '../../components/search-form-section/search-form-section';
 import { JobListings } from '../../components/job-listings/job-listings';
 import { Pagination } from '../../components/pagination/pagination';
-import { type Job } from '../../models/job.model';
+import type { Job, SearchFilters } from '../../models/job.model';
 import { HttpParams, httpResource } from '@angular/common/http';
 
 const RESULTS_PER_PAGE = 4;
@@ -26,7 +26,7 @@ export class Search {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
-  readonly filters = signal({
+  readonly filters = signal<SearchFilters>({
     technology: this.route.snapshot.queryParamMap.get('technology') ?? '',
     location: this.route.snapshot.queryParamMap.get('location') ?? '',
     experienceLevel: this.route.snapshot.queryParamMap.get('experienceLevel') ?? '',
@@ -34,10 +34,10 @@ export class Search {
 
   readonly textToFilter = signal(this.route.snapshot.queryParamMap.get('text') ?? '');
 
-  readonly currentPage = signal(() => {
+  readonly currentPage = signal((() => {
     const page = Number(this.route.snapshot.queryParamMap.get('page'));
     return !page || page < 1 ? 1 : page;
-  })();
+  })());
 
 
   // ─── FETCH A LA API ───────────────────────────────────────────────────────
@@ -92,7 +92,6 @@ export class Search {
     })
   }
 
-
   readonly jobs = computed(() =>{
     if (this.jobsResource.hasValue()) {
       return this.jobsResource.value()?.data ?? [];
@@ -108,5 +107,15 @@ export class Search {
   });
 
   readonly totalPages = computed(() => Math.ceil(this.total() / RESULTS_PER_PAGE));
+
+  handleSearch(filters: SearchFilters) {
+    this.filters.set(filters);
+    this.currentPage.set(1);
+  }
+
+  handleTextFilter(text: string) {
+    this.textToFilter.set(text);
+    this.currentPage.set(1);
+  }
 
 }
